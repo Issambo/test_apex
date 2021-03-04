@@ -31,11 +31,24 @@ Exercices à réaliser :
 
 1. Optimisation et application des bonnes pratiques APEX pour le batch SubscriptionComplianceCheck
 
+Decomposition du code en couches Service (classe SubscriptionComplianceService) et Modele(classe Subscriptions).
+Creation d'une classe contenant les constantes qui seront utilisées dans l'application (Sub_Constant)
+
 2. Optimisation et application des bonnes pratiques APEX pour la classe de test SubscriptionComplianceCheckTest
+TO DO : 
+Sortir les constantes de la classe de test vers Sub_Constant. 
+Rentrer l'instanciation de SubscriptionComplianceCheck dans la zone de limitation de test.
+Diversifier les cas de test pour couvrir plus de zone fonctionnelle et d'erreur.
 
 3. Optimisation et application des bonnes pratiques APEX pour le trigger ContractEndDateAdapterTrigger
+
+Sortir le code business de la trigger vers un handler (voir classe Subscriptions)
 
 4. Expliquer une solution technique et l'implémenter pour le besoin métier suivant : Un nouveau processus de conformité doit être ajouté. Celui-ci concerne les souscriptions dont le processus de conformité (ComplianceProcess__c) est à 
 la valeur "Conformité Pub". Pour ces souscriptions, il est nécessaire de valider que la date de fin effective (EffectiveEndDate__c) est supérieure à la date du jour. 
 De plus, un champ "MissingInformations__c" a été créé sur les souscriptions. Celui-ci doit être renseigné en cas d'échec du processus de conformité avec les différentes informations vérifiées par le processus de conformité concerné ("Conformité Pub" ou "Conformité Immo neuf"). 
 A noter : de nouveaux processus de conformité seront ajoutés ultérieurement.
+
+
+Ajout d'un nouveau processus dans la methode setConformite de la classe Subscription avec les vérification qui s'imposent.
+
