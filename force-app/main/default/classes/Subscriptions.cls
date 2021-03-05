@@ -34,12 +34,14 @@ public class Subscriptions {
                 setParentConforme(sub.SBQQ__RequiredById__c, subsToUpdate);
                 
             }
+            else{
+                setMissingInformations(sub, subsToUpdate);
+            }
             complianceProcesssCheck = false;
         }
         
-        if (subsToUpdate.size()>0){
-            setMissingInformations(subsToUpdate);            
-        }
+        
+        
         
         
     }
@@ -69,6 +71,7 @@ public class Subscriptions {
     }
     
     //set la end date des contrats des subscriptions.
+    //TO DO: sortir les traitement des contrats dans une classe modele CONTRATS.
     public void setContractEndDate(){
         Set<Id> cons = new Set<Id>();
         Boolean isTerminate;
@@ -136,17 +139,31 @@ public class Subscriptions {
         
     }
     //Renseigne les champs vérifiée pour chaque process en cas de non conformité.
-    private void setMissingInformations(List<SBQQ__Subscription__c> subs){
-        for (SBQQ__Subscription__c sub:subs){
-            if (sub.ComplianceProcess__c == Sub_Constant.IMMO_NEUF){
-                sub.MissingInformations__c = Sub_Constant.IMMO_NEUF_MISSING;
-                
+    private void setMissingInformations(SBQQ__Subscription__c sub, List<SBQQ__Subscription__c> subsToUpdate){
+        
+        
+        String missingInfo = null;
+        if (sub.ComplianceProcess__c == Sub_Constant.IMMO_NEUF){
+            for(String fieldName:Sub_Constant.IMMO_NEUF_MISSING){
+                if(sub.get(fieldName) == null){
+                    missingInfo+=fieldName;
+                    missingInfo+='#';
+                }
             }
-            if (sub.ComplianceProcess__c == Sub_Constant.PUB){
-                sub.MissingInformations__c = Sub_Constant.PUB_MISSING;
-                
-            }
+            
         }
+        if (sub.ComplianceProcess__c == Sub_Constant.PUB){
+            missingInfo = Sub_Constant.PUB_MISSING;
+            
+        }
+        
+        //Mise a jour seulement des subscriptions dont le processus de conformité est vérifié.
+        if(missingInfo != null){
+            sub.MissingInformations__c = missingInfo;
+            subsToUpdate.add(sub);
+        }
+        
+        
     }
     
     
