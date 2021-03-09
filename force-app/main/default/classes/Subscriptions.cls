@@ -1,9 +1,11 @@
 public class Subscriptions {
     
+    //propriété contenant la liste des SBQQ__Subscription
     public list<SBQQ__Subscription__c> subscriptions{get; private set;}
     
+
     public Subscriptions(List<SBQQ__Subscription__c> subList) {
-        subscriptions = subList.clone();
+        subscriptions = subList;
         
     }
     // verification de la conformité des souscriptions traitées.
@@ -27,13 +29,16 @@ public class Subscriptions {
                 complianceProcesssCheck = (sub.EffectiveEndDate__c > Date.today());
             }
             
+            //ajouter ici les autres traitements pour les autres processus.
             
+            //cas ou la subscription est conforme
             if (complianceProcesssCheck == true){
                 sub.Souscription_Conforme__c = true;
                 subsToUpdate.add(sub);
                 setParentConforme(sub.SBQQ__RequiredById__c, subsToUpdate);
                 
             }
+            //cas ou la subscription n'est pas conforme : renseigne la cause de la non conformité
             else{
                 setMissingInformations(sub, subsToUpdate);
             }
@@ -48,14 +53,16 @@ public class Subscriptions {
     
     
     // le gestionnaire de declencheur pour SBQQ__Subscription__c
-    public static void triggerHandler(List<SBQQ__Subscription__c> subs){
-        Subscriptions subscriptions = new Subscriptions(subs);
+    public void triggerHandler(){
+        
+        //traitement de l'after insert
         if (Trigger.isExecuting && Trigger.isAfter && Trigger.isInsert){
-            subscriptions.onAfterInsert();
+            onAfterInsert();
         }
         
+        //traitement de l'after update
         if (Trigger.isExecuting && Trigger.isAfter && Trigger.isUpdate){
-            subscriptions.onAfterUpdate();
+            onAfterUpdate();
         }
         
     }
@@ -71,8 +78,8 @@ public class Subscriptions {
     }
     
     //set la end date des contrats des subscriptions.
-    //TO DO: sortir les traitement des contrats dans une classe modele CONTRATS.
-    public void setContractEndDate(){
+    //TO DO: en contexte projet complet : sortir les traitement des contrats dans une classe modele CONTRATS.
+    private void setContractEndDate(){
         Set<Id> cons = new Set<Id>();
         Boolean isTerminate;
         Date terminatedDate;
@@ -127,7 +134,7 @@ public class Subscriptions {
     
     
     
-    
+    //Vérification de la conformité de la souscription parent.
     private void setParentConforme(String parentId, List<SBQQ__Subscription__c> subsToUpdate) {
         SBQQ__Subscription__c[] parentSub = [SELECT Id, Souscription_Conforme__c FROM SBQQ__Subscription__c WHERE Status__c = :Sub_Constant.ELEMENTS_MANQUANTS 
                                              AND Souscription_Conforme__c = false AND Id = :parentId];
@@ -138,12 +145,16 @@ public class Subscriptions {
         }
         
     }
+
+
     //Renseigne les champs vérifiée pour chaque process en cas de non conformité.
     private void setMissingInformations(SBQQ__Subscription__c sub, List<SBQQ__Subscription__c> subsToUpdate){
         
         
-        String missingInfo = null;
+        String missingInfo = '';
+        //dans le cas d'un processus IMMO_NEUF
         if (sub.ComplianceProcess__c == Sub_Constant.IMMO_NEUF){
+            //enregistrement des champs vide dans missing information 
             for(String fieldName:Sub_Constant.IMMO_NEUF_MISSING){
                 if(sub.get(fieldName) == null){
                     missingInfo+=fieldName;
@@ -152,6 +163,7 @@ public class Subscriptions {
             }
             
         }
+        //dans le cas d'un processus PUB
         if (sub.ComplianceProcess__c == Sub_Constant.PUB){
             missingInfo = Sub_Constant.PUB_MISSING;
             

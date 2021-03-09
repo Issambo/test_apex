@@ -35,10 +35,8 @@ Decomposition du code en couches Service (classe SubscriptionComplianceService) 
 Creation d'une classe contenant les constantes qui seront utilisées dans l'application (Sub_Constant)
 
 2. Optimisation et application des bonnes pratiques APEX pour la classe de test SubscriptionComplianceCheckTest
-TO DO : 
-Sortir les constantes de la classe de test vers Sub_Constant. 
-Rentrer l'instanciation de SubscriptionComplianceCheck dans la zone de limitation de test.
-Diversifier les cas de test pour couvrir plus de zone fonctionnelle et d'erreur.
+Création d'une classe d'utilitaires pour les test : TestDataFactory.
+Création d'une méthode d'initialisation des données de test dans SubscriptionComplianceCheckTest
 
 3. Optimisation et application des bonnes pratiques APEX pour le trigger ContractEndDateAdapterTrigger
 
